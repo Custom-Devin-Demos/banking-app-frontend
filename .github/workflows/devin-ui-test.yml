@@ -336,7 +336,7 @@ jobs:
             --header "Authorization: Bearer ${DEVIN_API_KEY_V3}" \
             --header 'Content-Type: application/json' \
             --data "{
-              \"prompt\": \"Run the SCA Vulnerability Check playbook for the react-banking-app repository. Use the snyk_sca_scan tool to check for vulnerabilities in dependencies.\",
+              \"prompt\": \"Run the SCA Vulnerability Check playbook. Repository: ${{ github.repository }}, PR #${{ github.event.pull_request.number }}, Branch: ${{ github.head_ref }}. Clone the repo, checkout the PR branch (${{ github.head_ref }}), run the Snyk SCA scan, and if you find simple fixes, push them to the ${{ github.head_ref }} branch.\",
               \"playbook_id\": \"${DEVIN_PLAYBOOK_ID}\"
             }")
           
