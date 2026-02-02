@@ -7,6 +7,7 @@ interface IProps {
   required?: boolean;
   placeholder: string;
   autoComplete?: boolean;
+  error?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,20 +19,24 @@ const Input: React.FC<IProps> = ({
   placeholder,
   required = false,
   autoComplete = false,
+  error,
   onChange,
 }) => (
-  <input
-    id={name}
-    name={name}
-    type={type}
-    value={value}
-    tabIndex={tabIndex}
-    required={required}
-    placeholder={placeholder}
-    autoComplete={autoComplete ? 'on' : 'off'}
-    onChange={onChange}
-    className='input'
-  />
+  <div className='input-wrapper'>
+    <input
+      id={name}
+      name={name}
+      type={type}
+      value={value}
+      tabIndex={tabIndex}
+      required={required}
+      placeholder={placeholder}
+      autoComplete={autoComplete ? 'on' : 'off'}
+      onChange={onChange}
+      className={`input${error ? ' input-error' : ''}`}
+    />
+    {error && <span className='input-error-message'>{error}</span>}
+  </div>
 );
 
 export default Input;

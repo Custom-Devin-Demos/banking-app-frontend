@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Sentry } from '../sentry';
 
 // components
 import Input from '../components/Form/Input';
@@ -6,6 +8,36 @@ import Button from '../components/Form/Button';
 
 const Signin: React.FC = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  /**
+   * Validates an email address format.
+   *
+   * @param {string} email - The email address to validate.
+   * @returns {string} Error message if invalid, empty string if valid.
+   */
+  const validateEmail = (email: string): string => {
+    if (!email) {
+      return 'Email is required';
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return 'Please enter a valid email address';
+    }
+    return '';
+  };
+
+  /**
+   * Handles email input change and validates the email.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+   */
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value;
+    setEmail(value);
+    setEmailError('');
+  };
 
   /**
    * Handles the form submission event by preventing the default behavior and navigating to the home page.
@@ -14,6 +46,16 @@ const Signin: React.FC = () => {
    */
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
+
+    const error = validateEmail(email);
+    if (error) {
+      setEmailError(error);
+      Sentry.captureMessage(`Email validation error: ${error}`, {
+        level: 'warning',
+        extra: { email },
+      });
+      return;
+    }
 
     navigate('/home', { replace: true });
   };
@@ -37,8 +79,11 @@ const Signin: React.FC = () => {
               tabIndex={0}
               name='email'
               type='email'
+              value={email}
               autoComplete={false}
               placeholder='Please enter your email'
+              error={emailError}
+              onChange={handleEmailChange}
             />
           </div>
           <div className='form-line'>
