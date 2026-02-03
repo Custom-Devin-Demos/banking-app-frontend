@@ -16,23 +16,11 @@ jobs:
       matrix:
         include:
           - test_name: sign_in_flow
-            playbook_id: playbook-1bf0331c2295428f9e6bd459c84ce119
-            prompt: 'Run the Sign In Flow Test playbook for the react-banking-app repository.'
-          - test_name: transactions_page_flow
-            playbook_id: playbook-20a3952e736a455eb1ab381b7797270d
-            prompt: 'Run the Transactions Page Flow Test playbook for the react-banking-app repository.'
-          - test_name: savings_currency_selection
-            playbook_id: playbook-61fe238917054a1f89cbc8d4a802ae7e
-            prompt: 'Run the Savings Currency Selection Flow Test playbook for the react-banking-app repository.'
-          - test_name: cards_page_flow
-            playbook_id: playbook-fadaef21379b4d8c878914fed798a444
-            prompt: 'Run the Cards Page Flow Test playbook for the react-banking-app repository.'
-          - test_name: profile_page_flow
-            playbook_id: playbook-a2eb4a5ba8784d73bf33b9a85477c2bb
-            prompt: 'Run the Profile Page Flow Test playbook for the react-banking-app repository.'
+            playbook_id: playbook-b294e922d6a2410ab6336fcbc5747b88
+            prompt: "Run the Sign In Flow Test playbook for the react-banking-app repository."
           - test_name: sign_out_flow
             playbook_id: playbook-73e9cdfdb46f49a1b0744595fce2486f
-            prompt: 'Run the Sign Out Flow Test playbook for the react-banking-app repository.'
+            prompt: "Run the Sign Out Flow Test playbook for the react-banking-app repository."
 
     steps:
       - name: Create Devin Session
@@ -138,7 +126,7 @@ jobs:
         env:
           DEVIN_API_KEY_V3: ${{ secrets.DEVIN_API_KEY_V3 }}
           DEVIN_ORG_ID: ${{ secrets.DEVIN_ORG_ID }}
-          DEVIN_PLAYBOOK_ID: 'playbook-f50d643119a0491b89c2a74765931e1c'
+          DEVIN_PLAYBOOK_ID: "playbook-0fe6792e0c68427ab3096cc286627173"
         run: |
           echo "Creating Devin session for documentation check..."
 
@@ -234,7 +222,7 @@ jobs:
         env:
           DEVIN_API_KEY_V3: ${{ secrets.DEVIN_API_KEY_V3 }}
           DEVIN_ORG_ID: ${{ secrets.DEVIN_ORG_ID }}
-          DEVIN_PLAYBOOK_ID: 'playbook-1c65933f913f48f582399ab27d55a20d'
+          DEVIN_PLAYBOOK_ID: "playbook-8a9e664006934432ab19b47ae0c50c83"
         run: |
           echo "Creating Devin session for cross-repo dependency check..."
 
@@ -330,7 +318,7 @@ jobs:
         env:
           DEVIN_API_KEY_V3: ${{ secrets.DEVIN_API_KEY_V3 }}
           DEVIN_ORG_ID: ${{ secrets.DEVIN_ORG_ID }}
-          DEVIN_PLAYBOOK_ID: 'playbook-88e89fadd5c141c6bd5e5942b0e31ba8'
+          DEVIN_PLAYBOOK_ID: "playbook-2ac4eb40c5614c6aafc70681fe57c64c"
         run: |
           echo "Creating Devin session for SCA vulnerability check..."
 
