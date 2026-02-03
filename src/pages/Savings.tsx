@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { logAuditEvent, AuditActions, getCurrentActor } from '../services/auditLogger';
 
 // components
 import Button from '../components/Form/Button';
@@ -9,6 +10,10 @@ import Currency from '../components/Currency/Currency';
 const Savings: React.FC = () => {
   const [selected, setSelected] = useState<string>('');
 
+  useEffect(() => {
+    logAuditEvent(getCurrentActor(), AuditActions.SAVINGS_VIEW, 'page:savings', 'success');
+  }, []);
+
   /**
    * Handles the selection of a currency symbol.
    *
@@ -16,6 +21,15 @@ const Savings: React.FC = () => {
    */
   const handleOnSelect = (symbol: string): void => {
     setSelected(symbol);
+    logAuditEvent(
+      getCurrentActor(),
+      AuditActions.SAVINGS_SELECT_CURRENCY,
+      'savings:currency',
+      'success',
+      {
+        currency: symbol,
+      }
+    );
   };
 
   return (

@@ -100,6 +100,44 @@ The Sentry DSN is configured in `src/sentry.ts`. If you fork this repository, re
 
 **Note:** The Transactions page includes a slow page load test that simulates a 4-second API delay and logs an error to Sentry when the load time exceeds 3 seconds. This demo code should be removed before production deployment.
 
+## Audit Logging
+
+This application includes audit logging to track security-relevant and business-critical actions. Audit events are output to the browser console and integrated with Sentry as breadcrumbs for debugging.
+
+**Tracked Events:**
+
+- User authentication (login success/failure, logout)
+- Account balance views (home page)
+- Transaction views and operations (transactions page, add money)
+- Profile views and settings interactions
+- Card management page views
+- Savings page views and currency selection
+
+**Audit Event Schema:**
+
+Each audit event follows this structure:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "actor": "user-identifier",
+  "action": "USER_LOGIN",
+  "resource": "auth:signin",
+  "outcome": "success",
+  "metadata": {}
+}
+```
+
+**Viewing Audit Logs:**
+
+Open your browser's Developer Tools (F12) and navigate to the Console tab. Audit events appear with the `[AUDIT]` prefix as JSON objects.
+
+**Configuration:**
+
+The audit logger is located in `src/services/auditLogger.ts`. Available actions are defined in the `AuditActions` constant.
+
+**Note:** The `getCurrentActor()` function returns a placeholder value (`'current-user'`). For production use, this should be connected to your actual user authentication/session state to return the real user identifier.
+
 ## Contributing
 
 If you would like to contribute, please create a new branch and submit a pull request with your changes. Review may be needed before acceptance.

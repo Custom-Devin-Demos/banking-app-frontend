@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Sentry } from '../sentry';
+import { logAuditEvent, AuditActions, getCurrentActor } from '../services/auditLogger';
 
 // components
 import Layout from '../components/Layout/Layout';
@@ -11,6 +12,10 @@ const SLOW_LOAD_THRESHOLD_MS = 3000;
 const Transactions: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const loadStartTime = useRef<number>(Date.now());
+
+  useEffect(() => {
+    logAuditEvent(getCurrentActor(), AuditActions.TRANSACTION_VIEW, 'page:transactions', 'success');
+  }, []);
 
   useEffect(() => {
     const simulateSlowApiCall = async () => {
