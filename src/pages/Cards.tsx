@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { logAuditEvent, AuditActions, getCurrentActor } from '../services/auditLogger';
 
 import Card from '../components/Card/Card';
 import Layout from '../components/Layout/Layout';
@@ -13,6 +14,10 @@ const Cards: React.FC = () => {
   const setLoadComplete = useScreenLoadMonitor({
     screenName: 'Cards',
   });
+
+  useEffect(() => {
+    logAuditEvent(getCurrentActor(), AuditActions.CARD_VIEW, 'page:cards', 'success');
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {

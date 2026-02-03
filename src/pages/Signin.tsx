@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sentry } from '../sentry';
+import { logAuditEvent, AuditActions } from '../services/auditLogger';
 
 // components
 import Input from '../components/Form/Input';
@@ -54,9 +55,13 @@ const Signin: React.FC = () => {
         level: 'warning',
         extra: { email },
       });
+      logAuditEvent(email || 'anonymous', AuditActions.USER_LOGIN, 'auth:signin', 'failure', {
+        reason: error,
+      });
       return;
     }
 
+    logAuditEvent(email, AuditActions.USER_LOGIN, 'auth:signin', 'success');
     navigate('/home', { replace: true });
   };
 

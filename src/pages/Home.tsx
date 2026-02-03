@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { logAuditEvent, AuditActions, getCurrentActor } from '../services/auditLogger';
+
 // components
 import Layout from '../components/Layout/Layout';
 import Balance from '../components/Balance/Balance';
@@ -26,24 +29,32 @@ const SentryTestButton: React.FC = () => (
   </button>
 );
 
-const Home: React.FC = () => (
-  <Layout>
-    <Balance balance={1325.5} currency='EURO' currencySymbol='€' />
+const Home: React.FC = () => {
+  useEffect(() => {
+    logAuditEvent(getCurrentActor(), AuditActions.BALANCE_VIEW, 'account:main', 'success', {
+      currency: 'EURO',
+    });
+  }, []);
 
-    <SentryTestButton />
+  return (
+    <Layout>
+      <Balance balance={1325.5} currency='EURO' currencySymbol='€' />
 
-    <Actions />
+      <SentryTestButton />
 
-    <Divider />
+      <Actions />
 
-    <History />
+      <Divider />
 
-    <Divider />
+      <History />
 
-    <Widgets />
+      <Divider />
 
-    <Divider />
-  </Layout>
-);
+      <Widgets />
+
+      <Divider />
+    </Layout>
+  );
+};
 
 export default Home;
