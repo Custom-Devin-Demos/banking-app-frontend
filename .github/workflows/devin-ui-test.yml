@@ -17,20 +17,23 @@ jobs:
         include:
           - test_name: sign_in_flow
             playbook_id: playbook-1bf0331c2295428f9e6bd459c84ce119
-            prompt: "Run the Sign In Flow Test playbook for the react-banking-app repository."
+            prompt: 'Run the Sign In Flow Test playbook for the react-banking-app repository.'
           - test_name: transactions_page_flow
             playbook_id: playbook-20a3952e736a455eb1ab381b7797270d
-            prompt: "Run the Transactions Page Flow Test playbook for the react-banking-app repository."
+            prompt: 'Run the Transactions Page Flow Test playbook for the react-banking-app repository.'
           - test_name: savings_currency_selection
             playbook_id: playbook-61fe238917054a1f89cbc8d4a802ae7e
-            prompt: "Run the Savings Currency Selection Flow Test playbook for the react-banking-app repository."
+            prompt: 'Run the Savings Currency Selection Flow Test playbook for the react-banking-app repository.'
           - test_name: cards_page_flow
             playbook_id: playbook-fadaef21379b4d8c878914fed798a444
-            prompt: "Run the Cards Page Flow Test playbook for the react-banking-app repository."
+            prompt: 'Run the Cards Page Flow Test playbook for the react-banking-app repository.'
           - test_name: profile_page_flow
             playbook_id: playbook-a2eb4a5ba8784d73bf33b9a85477c2bb
-            prompt: "Run the Profile Page Flow Test playbook for the react-banking-app repository."
-    
+            prompt: 'Run the Profile Page Flow Test playbook for the react-banking-app repository.'
+          - test_name: sign_out_flow
+            playbook_id: playbook-73e9cdfdb46f49a1b0744595fce2486f
+            prompt: 'Run the Sign Out Flow Test playbook for the react-banking-app repository.'
+
     steps:
       - name: Create Devin Session
         id: create-session
@@ -41,7 +44,7 @@ jobs:
           DEVIN_PROMPT: ${{ matrix.prompt }}
         run: |
           echo "Creating Devin session for ${{ matrix.test_name }}..."
-          
+
           RESPONSE=$(curl -s --request POST \
             --url "https://api.devin.ai/v3beta1/organizations/${DEVIN_ORG_ID}/sessions" \
             --header "Authorization: Bearer ${DEVIN_API_KEY_V3}" \
@@ -50,15 +53,15 @@ jobs:
               \"prompt\": \"${DEVIN_PROMPT} Repository: ${{ github.repository }}, PR #${{ github.event.pull_request.number }}, Branch: ${{ github.head_ref }}.\",
               \"playbook_id\": \"${DEVIN_PLAYBOOK_ID}\"
             }")
-          
+
           echo "Response: $RESPONSE"
-          
+
           SESSION_ID=$(echo "$RESPONSE" | jq -r '.session_id')
           if [ "$SESSION_ID" == "null" ] || [ -z "$SESSION_ID" ]; then
             echo "Failed to create session"
             exit 1
           fi
-          
+
           echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
           echo "Created session: $SESSION_ID"
 
@@ -69,10 +72,10 @@ jobs:
           SESSION_ID: ${{ steps.create-session.outputs.session_id }}
         run: |
           echo "Waiting for session $SESSION_ID to complete..."
-          
+
           MAX_ATTEMPTS=60
           ATTEMPT=0
-          
+
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
             RESPONSE=$(curl -s --request GET \
               --url "https://api.devin.ai/v1/sessions/${SESSION_ID}" \
@@ -99,7 +102,7 @@ jobs:
             ATTEMPT=$((ATTEMPT+1))
             sleep 15
           done
-          
+
           if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
             echo "Session timed out"
             echo "test_passed=false" >> $GITHUB_OUTPUT
@@ -117,28 +120,28 @@ jobs:
           echo "  Passed: $TEST_PASSED"
           echo "  Details: $DETAILS"
           echo "  Session: https://app.devin.ai/sessions/$SESSION_ID"
-          
+
           if [ "$TEST_PASSED" != "true" ]; then
             echo "UI test $TEST_NAME failed!"
             exit 1
           fi
-          
+
           echo "UI test $TEST_NAME passed!"
 
   documentation-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Create Devin Session
         id: create-session
         env:
           DEVIN_API_KEY_V3: ${{ secrets.DEVIN_API_KEY_V3 }}
           DEVIN_ORG_ID: ${{ secrets.DEVIN_ORG_ID }}
-          DEVIN_PLAYBOOK_ID: "playbook-f50d643119a0491b89c2a74765931e1c"
+          DEVIN_PLAYBOOK_ID: 'playbook-f50d643119a0491b89c2a74765931e1c'
         run: |
           echo "Creating Devin session for documentation check..."
-          
+
           RESPONSE=$(curl -s --request POST \
             --url "https://api.devin.ai/v3beta1/organizations/${DEVIN_ORG_ID}/sessions" \
             --header "Authorization: Bearer ${DEVIN_API_KEY_V3}" \
@@ -147,15 +150,15 @@ jobs:
               \"prompt\": \"Run the Documentation Update Check playbook for the react-banking-app repository. Repository: ${{ github.repository }}, PR #${{ github.event.pull_request.number }}, Branch: ${{ github.head_ref }}.\",
               \"playbook_id\": \"${DEVIN_PLAYBOOK_ID}\"
             }")
-          
+
           echo "Response: $RESPONSE"
-          
+
           SESSION_ID=$(echo "$RESPONSE" | jq -r '.session_id')
           if [ "$SESSION_ID" == "null" ] || [ -z "$SESSION_ID" ]; then
             echo "Failed to create session"
             exit 1
           fi
-          
+
           echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
           echo "Created session: $SESSION_ID"
 
@@ -166,10 +169,10 @@ jobs:
           SESSION_ID: ${{ steps.create-session.outputs.session_id }}
         run: |
           echo "Waiting for session $SESSION_ID to complete..."
-          
+
           MAX_ATTEMPTS=40
           ATTEMPT=0
-          
+
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
             RESPONSE=$(curl -s --request GET \
               --url "https://api.devin.ai/v1/sessions/${SESSION_ID}" \
@@ -196,7 +199,7 @@ jobs:
             ATTEMPT=$((ATTEMPT+1))
             sleep 15
           done
-          
+
           if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
             echo "Session timed out"
             echo "check_passed=false" >> $GITHUB_OUTPUT
@@ -213,28 +216,28 @@ jobs:
           echo "  Passed: $CHECK_PASSED"
           echo "  Details: $DETAILS"
           echo "  Session: https://app.devin.ai/sessions/$SESSION_ID"
-          
+
           if [ "$CHECK_PASSED" != "true" ]; then
             echo "Documentation check failed!"
             exit 1
           fi
-          
+
           echo "Documentation check passed!"
 
   cross-repo-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Create Devin Session
         id: create-session
         env:
           DEVIN_API_KEY_V3: ${{ secrets.DEVIN_API_KEY_V3 }}
           DEVIN_ORG_ID: ${{ secrets.DEVIN_ORG_ID }}
-          DEVIN_PLAYBOOK_ID: "playbook-1c65933f913f48f582399ab27d55a20d"
+          DEVIN_PLAYBOOK_ID: 'playbook-1c65933f913f48f582399ab27d55a20d'
         run: |
           echo "Creating Devin session for cross-repo dependency check..."
-          
+
           RESPONSE=$(curl -s --request POST \
             --url "https://api.devin.ai/v3beta1/organizations/${DEVIN_ORG_ID}/sessions" \
             --header "Authorization: Bearer ${DEVIN_API_KEY_V3}" \
@@ -243,15 +246,15 @@ jobs:
               \"prompt\": \"Run the Cross-Repo Dependency Check playbook for the react-banking-app repository. Repository: ${{ github.repository }}, PR #${{ github.event.pull_request.number }}, Branch: ${{ github.head_ref }}.\",
               \"playbook_id\": \"${DEVIN_PLAYBOOK_ID}\"
             }")
-          
+
           echo "Response: $RESPONSE"
-          
+
           SESSION_ID=$(echo "$RESPONSE" | jq -r '.session_id')
           if [ "$SESSION_ID" == "null" ] || [ -z "$SESSION_ID" ]; then
             echo "Failed to create session"
             exit 1
           fi
-          
+
           echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
           echo "Created session: $SESSION_ID"
 
@@ -262,10 +265,10 @@ jobs:
           SESSION_ID: ${{ steps.create-session.outputs.session_id }}
         run: |
           echo "Waiting for session $SESSION_ID to complete..."
-          
+
           MAX_ATTEMPTS=40
           ATTEMPT=0
-          
+
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
             RESPONSE=$(curl -s --request GET \
               --url "https://api.devin.ai/v1/sessions/${SESSION_ID}" \
@@ -292,7 +295,7 @@ jobs:
             ATTEMPT=$((ATTEMPT+1))
             sleep 15
           done
-          
+
           if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
             echo "Session timed out"
             echo "check_passed=false" >> $GITHUB_OUTPUT
@@ -309,28 +312,28 @@ jobs:
           echo "  Passed: $CHECK_PASSED"
           echo "  Details: $DETAILS"
           echo "  Session: https://app.devin.ai/sessions/$SESSION_ID"
-          
+
           if [ "$CHECK_PASSED" != "true" ]; then
             echo "Cross-repo dependency check failed!"
             exit 1
           fi
-          
+
           echo "Cross-repo dependency check passed!"
 
   sca-vulnerability-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Create Devin Session
         id: create-session
         env:
           DEVIN_API_KEY_V3: ${{ secrets.DEVIN_API_KEY_V3 }}
           DEVIN_ORG_ID: ${{ secrets.DEVIN_ORG_ID }}
-          DEVIN_PLAYBOOK_ID: "playbook-88e89fadd5c141c6bd5e5942b0e31ba8"
+          DEVIN_PLAYBOOK_ID: 'playbook-88e89fadd5c141c6bd5e5942b0e31ba8'
         run: |
           echo "Creating Devin session for SCA vulnerability check..."
-          
+
           RESPONSE=$(curl -s --request POST \
             --url "https://api.devin.ai/v3beta1/organizations/${DEVIN_ORG_ID}/sessions" \
             --header "Authorization: Bearer ${DEVIN_API_KEY_V3}" \
@@ -339,15 +342,15 @@ jobs:
               \"prompt\": \"Run the SCA Vulnerability Check playbook. Repository: ${{ github.repository }}, PR #${{ github.event.pull_request.number }}, Branch: ${{ github.head_ref }}. Clone the repo, checkout the PR branch (${{ github.head_ref }}), run the Snyk SCA scan, and if you find simple fixes, push them to the ${{ github.head_ref }} branch.\",
               \"playbook_id\": \"${DEVIN_PLAYBOOK_ID}\"
             }")
-          
+
           echo "Response: $RESPONSE"
-          
+
           SESSION_ID=$(echo "$RESPONSE" | jq -r '.session_id')
           if [ "$SESSION_ID" == "null" ] || [ -z "$SESSION_ID" ]; then
             echo "Failed to create session"
             exit 1
           fi
-          
+
           echo "session_id=$SESSION_ID" >> $GITHUB_OUTPUT
           echo "Created session: $SESSION_ID"
 
@@ -358,10 +361,10 @@ jobs:
           SESSION_ID: ${{ steps.create-session.outputs.session_id }}
         run: |
           echo "Waiting for session $SESSION_ID to complete..."
-          
+
           MAX_ATTEMPTS=40
           ATTEMPT=0
-          
+
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
             RESPONSE=$(curl -s --request GET \
               --url "https://api.devin.ai/v1/sessions/${SESSION_ID}" \
@@ -388,7 +391,7 @@ jobs:
             ATTEMPT=$((ATTEMPT+1))
             sleep 15
           done
-          
+
           if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
             echo "Session timed out"
             echo "check_passed=false" >> $GITHUB_OUTPUT
@@ -405,10 +408,10 @@ jobs:
           echo "  Passed: $CHECK_PASSED"
           echo "  Details: $DETAILS"
           echo "  Session: https://app.devin.ai/sessions/$SESSION_ID"
-          
+
           if [ "$CHECK_PASSED" != "true" ]; then
             echo "SCA vulnerability check failed!"
             exit 1
           fi
-          
+
           echo "SCA vulnerability check passed!"
