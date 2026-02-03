@@ -18,6 +18,9 @@ jobs:
           - test_name: sign_in_flow
             playbook_id: playbook-b294e922d6a2410ab6336fcbc5747b88
             prompt: "Run the Sign In Flow Test playbook for the react-banking-app repository."
+          - test_name: sign_out_flow
+            playbook_id: playbook-0d006156863b46b7bbbb510d3899e8d5
+            prompt: "Run the Sign Out Flow Test playbook for the react-banking-app repository. Navigate to the profile page by clicking the profile icon, then click the Sign out button and verify the user is taken back to the sign-in page."
     
     steps:
       - name: Create Devin Session
