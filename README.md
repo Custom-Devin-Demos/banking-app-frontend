@@ -98,6 +98,26 @@ The Sentry DSN is configured in `src/sentry.ts`. If you fork this repository, re
 
 **Note:** The test error button on the Home page is for verifying Sentry integration and should be removed before production deployment.
 
+## Testing
+
+### Gherkin Feature Specs
+
+Behavioral test specifications are located in `src/features/`. These `.feature` files use Gherkin syntax (Given–When–Then) to describe expected application behavior in a human-readable format.
+
+**Available feature files:**
+
+- `src/features/sign-out.feature` — Specifies the sign-out flow from the profile page, including happy path, failure handling, and edge cases (browser back button, unauthenticated access).
+
+These specs serve as living documentation and can be wired up to a test runner (e.g., Cucumber, Playwright BDD) for automated acceptance testing.
+
+### Unit Tests
+
+Unit tests are located alongside their components in `__tests__/` directories and can be run with:
+
+```bash
+npm test
+```
+
 ## Contributing
 
 If you would like to contribute, please create a new branch and submit a pull request with your changes. Review may be needed before acceptance.
