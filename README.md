@@ -98,6 +98,37 @@ The Sentry DSN is configured in `src/sentry.ts`. If you fork this repository, re
 
 **Note:** The test error button on the Home page is for verifying Sentry integration and should be removed before production deployment.
 
+## Screen Load Monitoring
+
+The application includes a `useScreenLoadMonitor` hook (`src/hooks/useScreenLoadMonitor.ts`) that tracks screen load performance and reports slow loads to Sentry.
+
+**How it works:**
+
+- When a screen mounts, the hook starts a performance timer.
+- The screen calls `setLoadComplete()` once its data is loaded.
+- If the load time exceeds the threshold (default: 3000ms), a warning-level message is sent to Sentry with timing details.
+
+**Usage:**
+
+```tsx
+import { useScreenLoadMonitor } from '../hooks/useScreenLoadMonitor';
+
+const MyPage: React.FC = () => {
+  const setLoadComplete = useScreenLoadMonitor({ screenName: 'MyPage' });
+
+  useEffect(() => {
+    fetchData().then(() => setLoadComplete());
+  }, [setLoadComplete]);
+
+  return <div>...</div>;
+};
+```
+
+**Configuration:**
+
+- `thresholdMs` (optional): Override the default 3000ms threshold per screen.
+- Reports are sent as `Sentry.captureMessage` at `warning` level, so they appear as warnings rather than errors in Sentry.
+
 ## Contributing
 
 If you would like to contribute, please create a new branch and submit a pull request with your changes. Review may be needed before acceptance.
