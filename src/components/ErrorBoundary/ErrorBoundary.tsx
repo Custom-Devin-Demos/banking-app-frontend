@@ -24,9 +24,10 @@ interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
 
-const handleError = (error: Error, componentStack: string): void => {
+const handleError = (error: unknown, componentStack: string): void => {
+  const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
   logAuditEvent('system', 'ERROR_BOUNDARY_TRIGGERED', 'app:error-boundary', 'failure', {
-    errorMessage: error.message,
+    errorMessage,
     componentStack,
   });
 };
