@@ -5,6 +5,7 @@ import Layout from '../components/Layout/Layout';
 import History from '../components/History/History';
 import Divider from '../components/Divider/Divider';
 import { useScreenLoadMonitor } from '../hooks/useScreenLoadMonitor';
+import { logAuditEvent } from '../services/auditLogger';
 
 const SIMULATED_LOAD_DELAY_MS = 5000;
 
@@ -24,6 +25,7 @@ const Cards: React.FC = () => {
 
   useEffect(() => {
     if (isDataLoaded) {
+      logAuditEvent('user', 'CARD_DATA_ACCESS', 'page:cards', 'success');
       setLoadComplete();
     }
   }, [isDataLoaded, setLoadComplete]);
