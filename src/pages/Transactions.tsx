@@ -5,14 +5,18 @@ import { Sentry } from '../sentry';
 import Layout from '../components/Layout/Layout';
 import History from '../components/History/History';
 import Divider from '../components/Divider/Divider';
+import { logAuditEvent } from '../services/auditLogger';
 
 const SLOW_LOAD_THRESHOLD_MS = 3000;
 
 const Transactions: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const loadStartTime = useRef<number>(Date.now());
+  const loadStartTime = useRef<number>(0);
 
   useEffect(() => {
+    loadStartTime.current = Date.now();
+    logAuditEvent('current-user', 'PAGE_VIEW', 'page:transactions', 'success');
+
     const simulateSlowApiCall = async () => {
       const artificialDelay = 4000;
 
