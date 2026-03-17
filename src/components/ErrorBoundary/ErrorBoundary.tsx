@@ -9,9 +9,6 @@ interface ErrorFallbackProps {
 
 const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetError }) => {
   const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-  logAuditEvent('system', 'ERROR_BOUNDARY_TRIGGERED', 'app:error-boundary', 'failure', {
-    errorMessage,
-  });
   return (
     <div role='alert' style={{ padding: '20px', textAlign: 'center' }}>
       <h2>Something went wrong</h2>
@@ -27,8 +24,16 @@ interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
 
+const handleError = (error: Error, componentStack: string): void => {
+  logAuditEvent('system', 'ERROR_BOUNDARY_TRIGGERED', 'app:error-boundary', 'failure', {
+    errorMessage: error.message,
+    componentStack,
+  });
+};
+
 export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => (
   <Sentry.ErrorBoundary
+    onError={handleError}
     fallback={({ error, resetError }) => <ErrorFallback error={error} resetError={resetError} />}
   >
     {children}
