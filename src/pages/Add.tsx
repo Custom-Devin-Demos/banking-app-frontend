@@ -1,3 +1,5 @@
+import { logAuditEvent } from '../services/auditLogger';
+
 // components
 import Saved from '../components/Add/Saved';
 import Arrow from '../components/Arrow/Arrow';
@@ -6,26 +8,32 @@ import Layout from '../components/Layout/Layout';
 import Divider from '../components/Divider/Divider';
 import Destination from '../components/Add/Destination';
 
-const Add: React.FC = () => (
-  <Layout>
-    <Divider />
+const Add: React.FC = () => {
+  const handleAddMoney = (): void => {
+    logAuditEvent('user', 'ADD_MONEY_INITIATED', 'transaction:add-money', 'success');
+  };
 
-    <h1 className='title no-select'>Add money</h1>
+  return (
+    <Layout>
+      <Divider />
 
-    <Saved />
+      <h1 className='title no-select'>Add money</h1>
 
-    <Arrow />
+      <Saved />
 
-    <Destination />
+      <Arrow />
 
-    <Divider />
+      <Destination />
 
-    <div className='add-buttons flex flex-space-between'>
-      <Button type='submit' text='Add money securely' tabIndex={0} />
-    </div>
+      <Divider />
 
-    <Divider />
-  </Layout>
-);
+      <div className='add-buttons flex flex-space-between'>
+        <Button type='submit' text='Add money securely' tabIndex={0} onClick={handleAddMoney} />
+      </div>
+
+      <Divider />
+    </Layout>
+  );
+};
 
 export default Add;

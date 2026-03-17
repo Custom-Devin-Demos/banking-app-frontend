@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { logAuditEvent } from '../services/auditLogger';
+
 // components
 import Button from '../components/Form/Button';
 import Layout from '../components/Layout/Layout';
@@ -16,6 +18,9 @@ const Savings: React.FC = () => {
    */
   const handleOnSelect = (symbol: string): void => {
     setSelected(symbol);
+    logAuditEvent('user', 'CURRENCY_SELECTED', 'savings:currency', 'success', {
+      currency: symbol,
+    });
   };
 
   return (
