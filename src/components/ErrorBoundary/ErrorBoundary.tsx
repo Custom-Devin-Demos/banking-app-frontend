@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react';
 import React from 'react';
+import { logAuditEvent } from '../../services/auditLogger';
 
 interface ErrorFallbackProps {
   error: unknown;
@@ -8,6 +9,9 @@ interface ErrorFallbackProps {
 
 const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetError }) => {
   const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+  logAuditEvent('system', 'ERROR_BOUNDARY_TRIGGERED', 'app:error-boundary', 'failure', {
+    errorMessage,
+  });
   return (
     <div role='alert' style={{ padding: '20px', textAlign: 'center' }}>
       <h2>Something went wrong</h2>
