@@ -5,6 +5,7 @@ import Button from '../components/Form/Button';
 import Layout from '../components/Layout/Layout';
 import Divider from '../components/Divider/Divider';
 import Currency from '../components/Currency/Currency';
+import { logAuditEvent } from '../services/auditLogger';
 
 const Savings: React.FC = () => {
   const [selected, setSelected] = useState<string>('');
@@ -16,6 +17,9 @@ const Savings: React.FC = () => {
    */
   const handleOnSelect = (symbol: string): void => {
     setSelected(symbol);
+    logAuditEvent('user', 'CURRENCY_SELECTION', 'savings:currency', 'success', {
+      currency: symbol,
+    });
   };
 
   return (

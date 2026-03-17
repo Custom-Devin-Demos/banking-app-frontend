@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react';
 import React from 'react';
+import { logAuditEvent } from '../../services/auditLogger';
 
 interface ErrorFallbackProps {
   error: unknown;
@@ -25,6 +26,12 @@ interface ErrorBoundaryProps {
 
 export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => (
   <Sentry.ErrorBoundary
+    onError={(error) => {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logAuditEvent('system', 'APPLICATION_ERROR', 'app:error-boundary', 'failure', {
+        error: errorMessage,
+      });
+    }}
     fallback={({ error, resetError }) => <ErrorFallback error={error} resetError={resetError} />}
   >
     {children}
